@@ -16,7 +16,7 @@
 
 - 【方案一】使用`quick_register.py`提交表单(Python用户推荐)
 - 【方案二】下载信息验证脚本（约10mb）[Download (github.com)](https://github.com/QIN2DIM/CampusDailyAutoSign/raw/main/register.zip)**||** [备用地址](http://t.qinse.top/cpdaily/register.zip)
-- 【方案三】[今日校园账号验证](http://47.115.62.227:8080/CPdaily/)(测试中)
+- 【方案三】今日校园账号验证(测试中)
 
 ## :loudspeaker: 更新日志
 
@@ -26,7 +26,7 @@
 
 - #### **2020.12.08 v_1.0.4.beta**
 
-    > 功能迭代
+    > **功能迭代**
 
     任务分发，解决因多用户并发而操作过热导致的IP封禁问题
 
@@ -54,7 +54,6 @@
 ## :world_map: 开源计划
 
 - [ ] ~~植入太极~~
-- [ ] 引入`actions`
 - [x] 用户管理
 - [x] 弹性伸缩
 - [x] 数据加密
