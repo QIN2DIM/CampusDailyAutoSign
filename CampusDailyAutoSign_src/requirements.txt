@@ -10,4 +10,5 @@ pydes>=2.0.1
 crypto>=1.4.1
 environs>=9.2.0
 loguru>=0.5.3
+email_validator
 schedule

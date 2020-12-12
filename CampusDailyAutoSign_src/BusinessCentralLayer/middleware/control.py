@@ -1,4 +1,6 @@
 __all__ = ['Interface']
+
+# FIXME 如果您在本目录下直接运行，或处于开发者调试模式，请将此行`exec`注释掉
 exec('from gevent import monkey\nmonkey.patch_all()')
 
 import csv
@@ -15,11 +17,13 @@ from config import *
 if 'win' in sys.platform:
     multiprocessing.freeze_support()
 
+# 解决方案
 __core__ = {
     'hainanu': HainanUniversity(),
     'local': NoCloudAction()
 }
 
+# 加速策略
 __speed_up_way__ = CampusDailySpeedUp
 
 
@@ -112,33 +116,43 @@ class SystemEngine(object):
 
 class PrepareEnv(object):
     def __init__(self):
-        if os.path.split(SERVER_DIR_DATABASE)[-1] not in os.listdir(SERVER_DIR_PROJECT):
-            logger.error(f'数据库路径缺失--{SERVER_DIR_DATABASE}')
-            logger.debug('正在创建数据库链接')
-            os.mkdir(SERVER_DIR_DATABASE)
-            logger.success('数据库路径初始化成功')
-
-        for dir_ in [SERVER_PATH_CACHE, SERVER_DIR_LOG]:
-            if os.path.split(dir_)[-1] not in os.listdir(SERVER_DIR_DATABASE):
-                logger.error(f'数据库文件缺失{os.path.split(dir_)[-1]}')
-                logger.debug('正在数据库文件链接')
-                os.mkdir(dir_)
-                logger.success('数据库文件初始化成功')
+        """
+        //ROOT
+        --BCL 中枢层
+        --BLL 逻辑层
+        --BVL 交互层
+        --DATABASE
+            --logs
+            --stu_info
+            --config_user.csv
+        """
+        ROOT = [
+            SERVER_PATH_CACHE,
+        ]
 
         if os.path.split(SERVER_PATH_CONFIG_USER)[-1] not in os.listdir(SERVER_DIR_DATABASE):
-            logger.error(f'用户表缺失--{SERVER_PATH_CONFIG_USER}')
-            logger.debug('正在尝试链接用户表')
+            logger.warning(f"检测到您初次运行{SECRET_NAME}，我们将为您重构文档树，"
+                           f"请在重构结束后配置任务队列，并重启任务")
+            exec("from time import sleep\nsleep(1)")
+            for dir_ in ROOT:
+                if os.path.split(dir_)[-1] not in os.listdir(SERVER_DIR_DATABASE):
+                    logger.info(f'正在拉取文件 -- {dir_}')
+                    os.mkdir(dir_)
+
+            logger.info(f'正在拉取文件 -- {SERVER_PATH_CONFIG_USER}')
             with open(SERVER_PATH_CONFIG_USER, 'w', encoding='utf-8', newline='') as f:
                 writer = csv.writer(f)
                 writer.writerow(TITLE)
                 writer.writerow(TEST_INFO)
-            logger.success('用户表初始化成功 任务即将重启')
-            logger.info('任务已重启 开始检查部署环境')
+            logger.success('<环境部署>任务结束')
+            exit()
+            # logger.success('用户表初始化成功 任务即将重启')
+            # logger.info('任务已重启 开始检查部署环境')
+
         with open(SERVER_PATH_CONFIG_USER, 'r', encoding='utf-8', newline='') as f:
             if TEST_INFO in [i for i in csv.reader(f) if i]:
-                logger.debug('任务队列为空 请根据参考案例手动添加第一条测试数据 并移除参考案例(第二行)')
+                logger.debug('任务队列为空 请根据参考案例手动添加第一条测试数据 并移除测试数据(第二行)')
                 logger.info(f"数据表地址 {SERVER_PATH_CONFIG_USER}")
-                logger.success('<环境部署>任务结束')
                 exit()
 
 

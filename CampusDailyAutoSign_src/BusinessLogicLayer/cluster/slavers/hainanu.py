@@ -9,11 +9,12 @@ from datetime import datetime
 
 import gevent
 import requests
-from Crypto.Cipher import AES
 from gevent.queue import Queue
 from requests.exceptions import *
+from Crypto.Cipher import AES
 
 from BusinessLogicLayer.cluster.master import ActionBase
+
 from config import *
 
 USE_PROXY = False
@@ -73,7 +74,7 @@ class HainanUniversity(ActionBase):
                             '<GoActionsID:1107>The Breathing-Rhythm Middleware has been activated to capture the '
                             'abnormal node.',
                             to=self.user_info['email'],
-                            header='<今日校园>提醒您【手动打卡】')
+                            headers='<今日校园>提醒您【手动打卡】')
             return False
 
         if not apis:
@@ -98,7 +99,7 @@ class HainanUniversity(ActionBase):
                             '<GoActionsID:1105>The Breathing Rhythm Middleware has been activated to capture the '
                             'abnormal node.',
                             to=self.user_info['email'],
-                            header='<今日校园>提醒您 -> 手动打卡')
+                            headers='<今日校园>提醒您 -> 手动打卡')
             return False
 
         # PartII. -- loads session cookie
@@ -252,24 +253,23 @@ class HainanUniversity(ActionBase):
                 # TODO：Function Add: WeChat Push by <server Kishida>
                 if message == 'SUCCESS':
                     logger.success("[SUCCESS] 签到 -- {}<{}> -- 自动签到成功".format(user['userName'], user['dept']))
-                    self.send_email(f'[{str(datetime.now(TIME_ZONE_CN)).split(".")[0]}]自动签到成功<From.{SECRET_NAME}>',
-                                    user['email'])
-
+                    self.send_email('success', user['email'])
                 # message error -- (ignore warning):The sign-in task of the next stage has not started
                 # message error -- (stale panic):An unknown error occurred
                 else:
                     if '任务未开始' not in message:
                         logger.critical("[PANIC] 签到 -- {} -- {}".format(user['username'], message))
+                        self.send_email('error', user['email'])
                     else:
-                        logger.info("[SUCCESS] 签到 -- {}<{}> -- 该实体本阶段任务已完成".format(user['userName'], user['dept']))
-                        # self.send_email('自动签到失败，原因是:' + message, user['email'])
+                        # 任务未开始，扫码签到无效
+                        logger.info("[IGNORE] 签到 -- {}<{}> -- 该用户本阶段任务已完成".format(user['userName'], user['dept']))
 
             # params error -- from the web interface of server.hainanu.net
             # params error -- The task for this student in the next time period is empty
             else:
                 # print('The task for this student in the next time period is empty :{} '.format(user['username']))
                 # self.send_email(self.error_msg, MANAGER_EMAIL)
-                logger.debug("[FAILED] 签到 -- {} -- 该实体下个时间段无任务".format(user['username']))
+                logger.debug("[FAILED] 签到 -- {} -- 该用户下个时间段无任务".format(user['username']))
                 # logger.debug('Params is None||可能错误原因：该时间段无签到任务||{}'.format(user['username']))
 
         # session error -- Account error: user or password is None;user or password is mismatch

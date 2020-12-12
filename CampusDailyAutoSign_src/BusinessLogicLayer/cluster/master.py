@@ -6,13 +6,13 @@ import uuid
 from urllib.parse import urlparse
 
 import requests
-from pyDes import des, CBC, PAD_PKCS5
 from requests.exceptions import *
+from pyDes import des, CBC, PAD_PKCS5
 
 from BusinessCentralLayer.sentinel.noticer import send_email
-from config import ADDRESS, LONGITUDE, LATITUDE, QnA, ABNORMAL_REASON, DEBUG, logger
+from config import ADDRESS, LONGITUDE, LATITUDE, QnA, ABNORMAL_REASON, DEBUG, logger, TIME_ZONE_CN, SECRET_NAME
 
-LOGGING_API = ""
+LOGGING_API = "http://www.zimo.wiki:8080/wisedu-unified-login-api-v1.0/api/login"
 
 
 # 交互仓库
@@ -65,7 +65,7 @@ class ActionBase(object):
         return apis
 
     # 登陆并获取session
-    def get_session(self, user, apis, retry=0, use_proxy=False, delay=10, max_retry_num=100):
+    def get_session(self, user, apis, retry=0, delay=10, max_retry_num=100):
         if retry >= max_retry_num:
             return False
         params = {
@@ -124,22 +124,12 @@ class ActionBase(object):
             }
         except json.decoder.JSONDecodeError:
             msg = f'the response of queryClass is None! ({res.status_code})|| Base on function(get_unsigned_tasks)'
-            # logger.debug(msg)
-            try:
-                if res.status_code == 200:
-                    pass
-                    # logger.info('the status code of response is ({})'.format(res.status_code))
-                    # logger.info(f'当前没有未签到任务{res.status_code} -- {self.user_info["username"]}')
-                else:
-                    s_msg = f"{msg}\n可能原因为：负责捕获MOD_AUTH_CAS任务的分布式节点异常/接口改动/资源请求方式改动"
-                    self.send_email(s_msg, to=self.user_info['email'], header='今日校园提醒您 -> 体温签到')
-            finally:
+            if res.status_code != 200:
+                s_msg = f"{msg}\n可能原因为：负责捕获MOD_AUTH_CAS任务的分布式节点异常/接口改动/资源请求方式改动"
+                self.send_email(s_msg, to=self.user_info['email'], headers='今日校园提醒您 -> 体温签到')
                 return False
         except IndexError:
-            # self.log("[FAILED] 签到-- {} || 该学院本阶段打卡任务为空 ({}) ".format(
-            #     self.user_info['username'],
-            #     res.json()['datas']['signedTasks'][0]['senderUserName']))
-            return None
+            return False
 
     # 获取签到任务详情
     def get_detail_task(self, session, params, apis=None):
@@ -273,10 +263,22 @@ class ActionBase(object):
             logger.debug(e)
 
     @staticmethod
-    def send_email(msg, to, header=None):
+    def send_email(msg, to, headers=None):
         from config import ENABLE_EMAIL
+        from datetime import datetime
         if ENABLE_EMAIL:
-            response = send_email(msg, to, header)
+            if msg == 'error':
+                response = send_email(
+                    msg=f'[{str(datetime.now(TIME_ZONE_CN)).split(".")[0]}]自动签到失败<From.{SECRET_NAME}>',
+                    to=to,
+                    headers='今日校园提醒您 -> ♂体温签到'
+                )
+            elif msg == 'success':
+                response = send_email(
+                    msg=f'[{str(datetime.now(TIME_ZONE_CN)).split(".")[0]}]自动签到成功<From.{SECRET_NAME}>',
+                    to=to,
+                    headers=None
+                )
+            else:
+                response = send_email(msg, to, headers)
             return response
-
-

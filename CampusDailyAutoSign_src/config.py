@@ -23,7 +23,7 @@ ENABLE_SMTP = env.bool("ENABLE_SMTP", True)
 ENABLE_SERVER = env.bool("ENABLE_IO", True)
 ENABLE_DEPLOY = env.bool("ENABLE_DEPLOY", True if 'linux' in sys.platform else False)
 ENABLE_COROUTINE = env.bool("ENABLE_COROUTINE", True if 'linux' in sys.platform else False)
-ENABLE_EMAIL = False
+ENABLE_EMAIL = True
 # -----------------------------------------------------------
 # TODO (√)SMTP_ACCOUNT -- 用于发送panic信息警报，默认发送给自己
 # 推荐使用QQ邮箱，开启邮箱SMTP服务教程如下
@@ -120,7 +120,7 @@ TIME_ZONE_US = pytz.timezone('America/New_York')
 
 # 信息键
 TITLE: list = env.list("TITLE", ['school', 'username', 'password', 'email'])
-TEST_INFO = ['海南大学', '20181234123400', '110qwe.zeq12+', 'sugar@hainanu.edu.cn']
+TEST_INFO = ['海南大学', '20181234123400', '110qwe.zeq12+', 'ARAI.DM@hainanu.edu.cn']
 # ------------------------------
 # 路由接口
 # ------------------------------
