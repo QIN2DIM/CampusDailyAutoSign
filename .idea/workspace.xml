@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="10dfa29a-c0c4-46fd-bd25-e87daa445a37" name="默认更改列表" comment="">
-      <change afterPath="$PROJECT_DIR$/CampusDailyAutoSign_src/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +37,26 @@
       <recent name="D:\Alkaid\CampusDailyAutoSign\pytransform" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.panel">
+  <component name="RunManager" selected="Python.forms">
+    <configuration name="forms" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="CampusDailyAutoSign" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CampusDailyAutoSign_src/BusinessViewLayer/myapp" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/CampusDailyAutoSign_src/BusinessViewLayer/myapp/forms.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="panel" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="CampusDailyAutoSign" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -193,13 +211,20 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.forms" />
+      <item itemvalue="Python.panel" />
+      <item itemvalue="Python.quick_register" />
+      <item itemvalue="Python.quick_register (1)" />
+      <item itemvalue="Python.quick_register (2)" />
+    </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.forms" />
         <item itemvalue="Python.panel" />
         <item itemvalue="Python.quick_register (2)" />
         <item itemvalue="Python.quick_register (2)" />
         <item itemvalue="Python.quick_register (1)" />
-        <item itemvalue="Python.quick_register" />
       </list>
     </recent_temporary>
   </component>
@@ -215,6 +240,7 @@
       <updated>1607532588587</updated>
       <workItem from="1607532607146" duration="984000" />
       <workItem from="1607533601334" duration="3423000" />
+      <workItem from="1608093038292" duration="2321000" />
     </task>
     <servers />
   </component>
@@ -222,43 +248,44 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="470" y="168" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1607533528965">
+    <state x="515" y="307" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1608095621566">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="470" y="168" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1607533528965" />
+    <state x="515" y="307" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1608095621566" />
     <state x="759" y="328" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1607535421863">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="759" y="328" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1607535421863" />
-    <state x="1019" y="218" key="FileChooserDialogImpl" timestamp="1607537032823">
+    <state x="1019" y="218" key="FileChooserDialogImpl" timestamp="1608095758355">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="1019" y="218" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1607537032823" />
-    <state width="1754" height="270" key="GridCell.Tab.0.bottom" timestamp="1607535499614">
+    <state x="1019" y="218" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1608095758355" />
+    <state width="1558" height="239" key="GridCell.Tab.0.bottom" timestamp="1608095759221">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1754" height="270" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1607535499614" />
-    <state width="1754" height="270" key="GridCell.Tab.0.center" timestamp="1607535499614">
+    <state width="1558" height="239" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1608095759221" />
+    <state width="1558" height="239" key="GridCell.Tab.0.center" timestamp="1608095759221">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1754" height="270" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1607535499614" />
-    <state width="1754" height="270" key="GridCell.Tab.0.left" timestamp="1607535499614">
+    <state width="1558" height="239" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1608095759221" />
+    <state width="1558" height="239" key="GridCell.Tab.0.left" timestamp="1608095759221">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1754" height="270" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1607535499614" />
-    <state width="1754" height="270" key="GridCell.Tab.0.right" timestamp="1607535499614">
+    <state width="1558" height="239" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1608095759221" />
+    <state width="1558" height="239" key="GridCell.Tab.0.right" timestamp="1608095759221">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1754" height="270" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1607535499614" />
-    <state x="389" y="99" key="SettingsEditor" timestamp="1607534253710">
+    <state width="1558" height="239" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1608095759221" />
+    <state x="389" y="99" key="SettingsEditor" timestamp="1608095711974">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="389" y="99" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1607534253710" />
+    <state x="389" y="99" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1608095711974" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/CampusDailyAutoSign$quick_register.coverage" NAME="quick_register Coverage Results" MODIFIED="1607534140710" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/CampusDailyAutoSign$panel.coverage" NAME="panel Coverage Results" MODIFIED="1607535368632" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/panel/dist" />
     <SUITE FILE_PATH="coverage/CampusDailyAutoSign$quick_register__1_.coverage" NAME="quick_register (1) Coverage Results" MODIFIED="1607534167941" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/pytransform" />
+    <SUITE FILE_PATH="coverage/CampusDailyAutoSign$forms.coverage" NAME="forms Coverage Results" MODIFIED="1608094444624" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CampusDailyAutoSign_src/BusinessViewLayer/myapp" />
     <SUITE FILE_PATH="coverage/CampusDailyAutoSign$quick_register__2_.coverage" NAME="quick_register (2) Coverage Results" MODIFIED="1607534278660" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

@@ -275,4 +275,7 @@ class HainanUniversity(ActionBase):
         # session error -- Account error: user or password is None;user or password is mismatch
         # session error -- HTTP error: connection time out; too many retries
         else:
-            logger.warning('[FAILED] 异常 -- {} -- 账号或密码错误/教务接口异常/使用代理'.format(user['username']))
+            if session is None:
+                logger.info("[IGNORE] 失败 -- {} -- 该用户本阶段任务或已结束".format(user['username']))
+            else:
+                logger.warning('[FAILED] 异常 -- {} -- 账号或密码错误/教务接口异常/使用代理'.format(user['username']))

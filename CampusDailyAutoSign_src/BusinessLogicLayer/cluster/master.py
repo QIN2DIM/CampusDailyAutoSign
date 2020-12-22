@@ -85,7 +85,10 @@ class ActionBase(object):
                 cookieStr = str(res.json()['cookies'])
 
                 if cookieStr == 'None':
-                    return None
+                    if "网页中没有找到casLoginForm" in res.json()['msg']:
+                        return None
+                    else:
+                        return False
 
                 # 解析cookie
                 for line in cookieStr.split(';'):
@@ -94,6 +97,8 @@ class ActionBase(object):
                 session = requests.session()
                 session.cookies = requests.utils.cookiejar_from_dict(cookies, cookiejar=None, overwrite=True)
                 return session
+        except json.decoder.JSONDecodeError or ProxyError:
+            logger.warning("目标或存在鉴权行为，请关闭本地网络代理")
         except RequestException:
             retry += 1
             self.get_session(user, apis, retry)
