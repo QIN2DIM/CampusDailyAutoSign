@@ -79,11 +79,9 @@ class ActionBase(object):
         try:
             # fixme:统一认证接口抽风，原因未知，故当前版本不启用proxy方案
             res = requests.post(url=LOGGING_API, data=params)
-
             res.raise_for_status()
             if res.status_code == 200:
                 cookieStr = str(res.json()['cookies'])
-
                 if cookieStr == 'None':
                     if "网页中没有找到casLoginForm" in res.json()['msg']:
                         return None
@@ -118,7 +116,7 @@ class ActionBase(object):
         }
         # 第一次请求每日签到任务接口，主要是为了获取MOD_AUTH_CAS
         res = session.post(
-            url='https://{host}/wec-counselor-sign-apps/stu/sign/queryDailySginTasks'.format(host=apis['host']),
+            url='https://{host}/wec-counselor-sign-apps/stu/sign/getStuSignInfosInOneDay'.format(host=apis['host']),
             headers=headers, data=json.dumps({}))
         # fixme:DEBUG module-- response status code :404
         try:
@@ -131,7 +129,7 @@ class ActionBase(object):
             msg = f'the response of queryClass is None! ({res.status_code})|| Base on function(get_unsigned_tasks)'
             if res.status_code != 200:
                 s_msg = f"{msg}\n可能原因为：负责捕获MOD_AUTH_CAS任务的分布式节点异常/接口改动/资源请求方式改动"
-                self.send_email(s_msg, to=self.user_info['email'], headers='今日校园提醒您 -> 体温签到')
+                # self.send_email(s_msg, to=self.user_info['email'], headers='今日校园提醒您 -> 体温签到')
                 return False
         except IndexError:
             return False
@@ -150,7 +148,7 @@ class ActionBase(object):
             'Content-Type': 'application/json;charset=UTF-8'
         }
         res = session.post(
-            url='https://{host}/wec-counselor-sign-apps/stu/sign/detailSignTaskInst'.format(host=apis['host']),
+            url='https://{host}/wec-counselor-sign-apps/stu/sign/detailSignInstance'.format(host=apis['host']),
             headers=headers, data=json.dumps(params), verify=not DEBUG)
         data = res.json()['datas']
 
@@ -260,7 +258,7 @@ class ActionBase(object):
             'Connection': 'Keep-Alive'
         }
         res = session.post(
-            url='https://{host}/wec-counselor-sign-apps/stu/sign/completeSignIn'.format(host=apis['host']),
+            url='https://{host}/wec-counselor-sign-apps/stu/sign/submitSign'.format(host=apis['host']),
             headers=headers, data=json.dumps(form), verify=not DEBUG)
         try:
             return res.json()['message']
