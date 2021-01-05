@@ -28,5 +28,5 @@
 
 > 本项目由海南大学机器人与人工智能协会数据挖掘小组 **(A-RAI.DM)** 提供维护
 
-- [Email](mailto:RmAlkaid@outlook.com?subject=CampusDailyAutoSign-ISSUE) **||** [Home](https://a-rai.github.io/)**||** [About](https://github.com/QIN2DIM/CampusDailyAutoSign/raw/main/docs/about.md)
+- [Email](mailto:RmAlkaid@outlook.com?subject=CampusDailyAutoSign-ISSUE) **||** [Home](https://a-rai.github.io/)**||** [About](https://github.com/QIN2DIM/CampusDailyAutoSign/blob/main/docs/about.md)
 
