@@ -1,32 +1,22 @@
 __all__ = ['deploy']
 
 
-def deploy(task_name, tz='cn', superuser_time="12:00"):
+def deploy(task_name, upload_snp=None):
     """
-        Linux 云端部署
-    :param superuser_time:
-    :param task_name: CampusDailySpeedUp(HainanUniversity).run
-    :param tz:
+    Linux 云端部署
+    :param upload_snp:
+    :param task_name: CampusDailySpeedupPlus(core()).run
     :return:
     """
     import time
     import schedule
-    from datetime import datetime, timedelta
+    from datetime import datetime
     from config import TIME_ZONE_CN, MANAGER_EMAIL, logger
     from BusinessCentralLayer.sentinel.noticer import send_email
 
-    # todo:植入截图合成脚本
-    morn, noon, night = "07:30", superuser_time, "21:00"
-
-    if tz == 'us':
-        # 纽约时区
-        morn = (datetime(2020, 11, 6, 7, 0, 0) - timedelta(hours=13)).strftime("%H:%M")
-        noon = (datetime(2020, 11, 6, 12, 0, 0) - timedelta(hours=13)).strftime("%H:%M")
-        night = (datetime(2020, 11, 6, 21, 0, 0) - timedelta(hours=13)).strftime("%H:%M")
-
-    # schedule.every().day.at(morn).do(task_name)
-    schedule.every().day.at(noon).do(task_name)
-    # schedule.every().day.at(night).do(task_name)
+    schedule.every().day.at("12:00").do(task_name)
+    if upload_snp:
+        schedule.every().day.at("12:03").do(upload_snp)
 
     try:
         while True:

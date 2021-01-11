@@ -5,7 +5,6 @@ from gevent import monkey
 monkey.patch_all()
 import gevent
 from gevent.queue import Queue
-
 from BusinessCentralLayer.middleware.data_io import refresh_database
 
 
@@ -34,7 +33,7 @@ class CoroutineEngine(object):
         self.core = core
 
     def load_tasks(self, tasks=None):
-        if isinstance(tasks, list):
+        if isinstance(tasks, list or tuple or set):
             for task in tasks:
                 self.work_Q.put_nowait(task)
         elif not tasks and self.config_path:
@@ -84,38 +83,52 @@ class CoroutineEngine(object):
                 progress_bar.update(abs(now_2))
 
     # 入口
-    def run(self, speed_up=True):
+    def run(self, speed_up=True, use_bar=False):
         """
         协程任务接口
         :return:
         """
+        from config import logger
+
+        # 初始化任务队列
         task_list = []
 
-        # 刷新任务队列
-        self.load_tasks(tasks=self.user_cluster)
+        # 重置任务状态
+        if not self.core:
+            return False
+        self.core = self.core()
+
+        # 刷新任务队列，重置弹性
+        if self.user_cluster:
+            self.load_tasks(tasks=self.user_cluster())
+        else:
+            self.load_tasks()
 
         # 启动进度条
-        exec("import sys"
-             "\nimport threading"
-             "\nthreading.Thread(target=self.progress_manager,"
-             "args=(self.max_queue_size, self.progress_name + '[{}]'.format(self.power))).start()")
+        if use_bar:
+            exec("import sys"
+                 "\nimport threading"
+                 "\nthreading.Thread(target=self.progress_manager,"
+                 "args=(self.max_queue_size, self.progress_name + '[{}]'.format(self.power))).start()")
 
         # 弹性协程
         if not speed_up:
             self.power = 1
 
+        # 启动任务
         for x in range(self.power):
             task = gevent.spawn(self.launch)
             task_list.append(task)
         gevent.joinall(task_list)
+        logger.success('<Gevent> 任务完成')
 
 
 class CampusDailySpeedUp(CoroutineEngine):
     """协程控件继承"""
 
-    def __init__(self, core, config_path=None, power: int = 4, progress_name: str = '任务进度', task_list=None):
-        super(CampusDailySpeedUp, self).__init__(core=core, power=power, user_cluster=task_list,
-                                                 progress_name=progress_name, config_path=config_path)
+    def __init__(self, core, config_path=None, power: int = 4, user_cluster=None):
+        super(CampusDailySpeedUp, self).__init__(core=core, power=power, user_cluster=user_cluster,
+                                                 progress_name='任务进度', config_path=config_path)
 
     def control_driver(self, task):
         self.core.run(task)

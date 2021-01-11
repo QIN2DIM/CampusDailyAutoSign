@@ -3,15 +3,13 @@ __all__ = ['Interface']
 # FIXME 如果您在本目录下直接运行，或处于开发者调试模式，请将此行`exec`注释掉
 exec('from gevent import monkey\nmonkey.patch_all()')
 
+import os
 import csv
 import multiprocessing
-import os
 
+from BusinessCentralLayer.middleware.flow_io import sync_user_data
 from BusinessCentralLayer.middleware.coroutine_engine import CampusDailySpeedUp
 from BusinessLogicLayer.cluster.deploy import deploy
-from BusinessLogicLayer.cluster.slavers.hainanu import HainanUniversity
-from BusinessLogicLayer.cluster.slavers.local_actions import NoCloudAction
-from BusinessLogicLayer.cluster.slavers.Online_Service_Hall_submit import OnlineServiceHallSubmit
 from BusinessLogicLayer.cluster.slavers.osh_slaver import OshSlaver
 from BusinessViewLayer.myapp.forms import app
 from config import *
@@ -20,15 +18,21 @@ if 'win' in sys.platform:
     multiprocessing.freeze_support()
 
 # 解决方案
-__core__ = {
-    'hainanu': HainanUniversity(),
-    'local': NoCloudAction(),
-    'osh': OnlineServiceHallSubmit(),
-    'osl': OshSlaver()
-}
+__core__ = {'osl': OshSlaver}
+
+# 数据库存储方案
+__storage_plan__ = DATABASE_TYPE
 
 # 加速策略
 __speed_up_way__ = CampusDailySpeedUp
+
+# 截图处理方案
+if ENABLE_UPLOAD:
+    from BusinessLogicLayer.cluster.upload_snp import UploadScreenshot
+
+    __upload__ = UploadScreenshot
+else:
+    __upload__ = False
 
 
 class SystemEngine(object):
@@ -44,13 +48,17 @@ class SystemEngine(object):
         # 核心装载，任务识别
         self.core = __core__['osl'] if kwargs.get(
             "core") is None else kwargs.get("core")
-        logger.info("<驱动核心>:core:{}".format(self.core.__class__.__name__))
+        logger.info("<驱动核心>:core:osl".format(self.core.__class__.__name__))
 
         # 加速策略挂载
         self.speed_up_way = __speed_up_way__ if kwargs.get(
             "speed_up_way") is None else kwargs.get("speed_up_way")
         logger.info("<加速策略>:speed_up_way:<{}>".format(
             self.speed_up_way.__module__))
+
+        # 截图上传策略
+        self.upload = __upload__
+        logger.info('<截图上传>:{}'.format(self.upload))
 
         # 默认linux下自动部署
         self.enable_deploy = ENABLE_DEPLOY if kwargs.get(
@@ -67,35 +75,39 @@ class SystemEngine(object):
         logger.info('<初始化进程>:deploy_process:server_process')
 
     def __test__(self):
-
         # 调用协程控制器
-        signal_server = self.speed_up_way(
-            core=self.core, config_path=self.config_path)
+        signal_server = self.speed_up_way(core=self.core, user_cluster=sync_user_data)
+        if __storage_plan__ == 'csv':
+            signal_server = self.speed_up_way(core=self.core, config_path=SERVER_PATH_CONFIG_USER)
         logger.debug('<单机运行>工程核心准备就绪 任务即将开始')
         signal_server.run(speed_up=self.speed_up)
         logger.success('<单机运行>任务结束')
 
     def run_deploy(self):
-        deploy(self.speed_up_way(core=self.core, config_path=self.config_path).run)
+        if __storage_plan__ == 'mysql':
+            deploy(self.speed_up_way(core=self.core, user_cluster=sync_user_data).run,
+                   self.speed_up_way(core=self.upload, user_cluster=sync_user_data).run)
+        elif __storage_plan__ == 'csv':
+            deploy(task_name=self.speed_up_way(core=self.core, config_path=SERVER_PATH_CONFIG_USER).run,
+                   upload_snp=self.speed_up_way(core=self.upload, config_path=SERVER_PATH_CONFIG_USER).run)
 
     @staticmethod
     def run_server():
-        app.run(host='0.0.0.0', port=API_PORT,
-                debug=API_DEBUG, threaded=API_THREADED)
+        app.run(host='0.0.0.0', port=API_PORT, debug=API_DEBUG, threaded=API_THREADED)
 
     def run(self):
+        logger.debug('<Gevent>工程核心准备就绪 任务即将开始')
         try:
-            logger.debug('<Gevent>工程核心准备就绪 任务即将开始')
             if self.enable_deploy:
                 self.deploy_process = multiprocessing.Process(
-                    target=self.run_deploy, name='定时签到')
+                    target=self.run_deploy, name='体温签到/截图上传')
                 logger.info(
                     f'starting {self.deploy_process.name}, pid {self.deploy_process.pid}...')
                 self.deploy_process.start()
 
             if ENABLE_SERVER:
                 self.server_process = multiprocessing.Process(
-                    target=self.run_server, name='程序接口')
+                    target=self.run_server, name='接口部署')
                 logger.info(
                     f'starting {self.server_process.name}, pid {self.server_process.pid}...')
                 self.server_process.start()
@@ -108,6 +120,8 @@ class SystemEngine(object):
             logger.debug('received keyboard interrupt signal')
             self.server_process.terminate()
             self.deploy_process.terminate()
+        except Exception as e:
+            logger.exception(e)
         finally:
             self.deploy_process.join()
             self.server_process.join()
@@ -115,7 +129,6 @@ class SystemEngine(object):
                 f'{self.deploy_process.name} is {"alive" if self.deploy_process.is_alive() else "dead"}')
             logger.info(
                 f'{self.server_process.name} is {"alive" if self.server_process.is_alive() else "dead"}')
-            logger.success('<Gevent>任务结束')
 
 
 class PrepareEnv(object):
@@ -128,36 +141,40 @@ class PrepareEnv(object):
         --DATABASE
             --logs
             --stu_info
+            --stu_screenshot
+                --*2020-01-11
+                --*2020-01-12
+                --*,...
             --config_user.csv
+            --*superuser_cookie.txt
         """
         ROOT = [
             SERVER_DIR_CACHE, SERVER_DIR_SCREENSHOT
         ]
 
-        if os.path.split(SERVER_PATH_CONFIG_USER)[-1] not in os.listdir(SERVER_DIR_DATABASE):
-            logger.warning(f"检测到您初次运行{SECRET_NAME}，我们将为您重构文档树，"
-                           f"请在重构结束后配置任务队列，并重启任务")
-            exec("from time import sleep\nsleep(1)")
-            for dir_ in ROOT:
-                if os.path.split(dir_)[-1] not in os.listdir(SERVER_DIR_DATABASE):
-                    logger.info(f'正在拉取文件 -- {dir_}')
-                    os.mkdir(dir_)
+        for dir_ in ROOT:
+            if os.path.split(dir_)[-1] not in os.listdir(SERVER_DIR_DATABASE):
+                logger.info(f'正在拉取文件 -- {dir_}')
+                os.mkdir(dir_)
+        if __storage_plan__ == 'csv':
+            if os.path.split(SERVER_PATH_CONFIG_USER)[-1] not in os.listdir(SERVER_DIR_DATABASE):
+                logger.warning(f"检测到您初次运行{SECRET_NAME}，我们将为您重构文档树，"
+                               f"请在重构结束后配置任务队列，并重启任务")
+                exec("from time import sleep\nsleep(1)")
 
-            logger.info(f'正在拉取文件 -- {SERVER_PATH_CONFIG_USER}')
-            with open(SERVER_PATH_CONFIG_USER, 'w', encoding='utf-8', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow(TITLE)
-                writer.writerow(TEST_INFO)
-            logger.success('<环境部署>任务结束')
-            exit()
-            # logger.success('用户表初始化成功 任务即将重启')
-            # logger.info('任务已重启 开始检查部署环境')
-
-        with open(SERVER_PATH_CONFIG_USER, 'r', encoding='utf-8', newline='') as f:
-            if TEST_INFO in [i for i in csv.reader(f) if i]:
-                logger.debug('任务队列为空 请根据参考案例手动添加第一条测试数据 并移除测试数据(第二行)')
-                logger.info(f"数据表地址 {SERVER_PATH_CONFIG_USER}")
+                logger.info(f'正在拉取文件 -- {SERVER_PATH_CONFIG_USER}')
+                with open(SERVER_PATH_CONFIG_USER, 'w', encoding='utf-8', newline='') as f:
+                    writer = csv.writer(f)
+                    writer.writerow(TITLE)
+                    writer.writerow(TEST_INFO)
+                logger.success('<环境部署>任务结束')
                 exit()
+
+            with open(SERVER_PATH_CONFIG_USER, 'r', encoding='utf-8', newline='') as f:
+                if TEST_INFO in [i for i in csv.reader(f) if i]:
+                    logger.debug('任务队列为空 请根据参考案例手动添加第一条测试数据 并移除测试数据(第二行)')
+                    logger.info(f"数据表地址 {SERVER_PATH_CONFIG_USER}")
+                    exit()
 
 
 PrepareEnv()

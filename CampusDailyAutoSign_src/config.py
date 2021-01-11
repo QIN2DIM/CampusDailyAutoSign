@@ -24,7 +24,8 @@ ENABLE_SERVER = env.bool("ENABLE_IO", True)
 ENABLE_DEPLOY = env.bool("ENABLE_DEPLOY", True if 'linux' in sys.platform else False)
 ENABLE_COROUTINE = env.bool("ENABLE_COROUTINE", True if 'linux' in sys.platform else False)
 ENABLE_EMAIL = True
-
+ENABLE_UPLOAD = True
+DATABASE_TYPE = 'mysql'  # mysql or  csv
 # -----------------------------------------------------------
 # TODO (√)SuperUser -- 网上服务大厅账号
 # 此项用于刷新cookie pool，若不填写程序将无法正常执行
@@ -80,7 +81,12 @@ MYSQL_HOST = env.str("DATABASE_HOST", 'localhost')
 MYSQL_PORT = env.int("MYSQL_PORT", 3306)
 MYSQL_PASSWORD = env.str("MYSQL_PASSWORD", "")
 MYSQL_DB = env.str("MYSQL_DB", "cpds_db")
-
+MySQL_CONFIG = {
+    'user': '',
+    'host': '',
+    'password': '',
+    'db': ''
+}
 """
 =========================== ʕ•ﻌ•ʔ ===================================
 如果您并非<CampusDailyAutoSign>项目开发者 请勿修改以下变量的默认参数
