@@ -43,7 +43,7 @@ class CoroutineEngine(object):
                 self.work_Q.put_nowait(value)
         self.max_queue_size = self.work_Q.qsize()
         # 弹性协程
-        self.power = 72 if self.max_queue_size >= 72 else self.max_queue_size
+        self.power = self.power if self.max_queue_size >= self.power else self.max_queue_size
 
     def launch(self):
         while not self.work_Q.empty():

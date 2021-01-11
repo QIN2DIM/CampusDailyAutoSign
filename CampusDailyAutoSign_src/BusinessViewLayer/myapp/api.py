@@ -141,3 +141,71 @@ def apis_add_user(user: dict, verify_code_token: dict):
             response.update({'info': '参数数据类型错误'})
     finally:
         return response
+
+
+# ====================================================================
+
+def apis_snp_exist(user: dict) -> dict:
+    import os
+    from config import SERVER_DIR_SCREENSHOT
+    osh_day = user.get('osh_day')
+    username = user.get('username')
+    osh_model_day = os.path.join(SERVER_DIR_SCREENSHOT, osh_day)
+
+    if "{}.png".format(username) in os.listdir(osh_model_day):
+        return {'info': '用户已手动签到', 'msg': 'success'}
+    else:
+        return {'info': '用户待签到', 'msg': 'goto'}
+
+
+def _select_user_table(username) -> dict or bool:
+    with open(SERVER_PATH_CONFIG_USER, 'r', encoding='utf8') as f:
+        ids = [i for i in csv.reader(f) if i][1:]
+    for id_ in ids:
+        if username in id_ and id_[2]:
+            return {'password': id_[2]}
+    return False
+
+
+def apis_stu_twqd(user: dict):
+    from BusinessLogicLayer.cluster.slavers.osh_slaver import stu_twqd
+
+    user_ = {'username': user.get('username'), }
+
+    # 启动节点任务,该操作为风险操作，权限越界，无需知道用户密码也可完成操作
+    return stu_twqd(user_)
+
+
+def apis_reload_superuser_cookie():
+    from BusinessLogicLayer.cluster.slavers.Online_Service_Hall_submit import get_admin_cookie
+    return get_admin_cookie()
+
+
+def apis_stu_twqd_plus(user: dict):
+    """
+    当OSS没有截图时使用此接口
+    既已知OSS没有截图，故无论osh-slaver如何执行，都要调用 osh-s上传截图
+    :param user:
+    :return:
+    """
+    from BusinessLogicLayer.cluster.slavers.Online_Service_Hall_submit import get_snp_and_upload
+    from BusinessLogicLayer.cluster.slavers.osh_slaver import check_display_state, stu_twqd
+
+    user_ = {'username': user.get('username'), }
+
+    # 用户鉴权
+    ttp = _select_user_table(user_["username"])
+    if ttp:
+        user_.update(ttp)
+    else:
+        return {'msg': 'failed', 'info': '用户权限不足', 'code': 101}
+
+    # 使用osh-slaver判断用户是否签到
+    # 若未签到，startup osh-main 进行签到；
+    # 若已签到，end osh-main 结束子程序
+    stu_state = check_display_state(user_)
+    if stu_state['code'] != 902:
+        stu_twqd(user_)
+
+    # 启动Selenium上传截图 并返回调试数据
+    return get_snp_and_upload(user_)

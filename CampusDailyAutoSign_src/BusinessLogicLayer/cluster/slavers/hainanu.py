@@ -215,7 +215,7 @@ class HainanUniversity(ActionBase):
 
         if not user_q.empty():
             stu_info: dict = user_q.get_nowait()
-            output = os.path.join(SERVER_PATH_CACHE, '{}.json'.format(stu_info['userId']))
+            output = os.path.join(SERVER_DIR_CACHE, '{}.json'.format(stu_info['userId']))
             with open(output, 'w', encoding='utf8') as f:
                 f.write(json.dumps(stu_info, indent=4, ensure_ascii=False))
             return stu_info
@@ -253,13 +253,13 @@ class HainanUniversity(ActionBase):
                 # TODO：Function Add: WeChat Push by <server Kishida>
                 if message == 'SUCCESS':
                     logger.success("[SUCCESS] 签到 -- {}<{}> -- 自动签到成功".format(user['userName'], user['dept']))
-                    self.send_email('success', user['email'])
+                    # self.send_email('success', user['email'])
                 # message error -- (ignore warning):The sign-in task of the next stage has not started
                 # message error -- (stale panic):An unknown error occurred
                 else:
                     if '任务未开始' not in message:
                         logger.critical("[PANIC] 签到 -- {} -- {}".format(user['username'], message))
-                        self.send_email('error', user['email'])
+                        # self.send_email('error', user['email'])
                     else:
                         # 任务未开始，扫码签到无效
                         logger.info("[IGNORE] 签到 -- {}<{}> -- 该用户本阶段任务已完成".format(user['userName'], user['dept']))

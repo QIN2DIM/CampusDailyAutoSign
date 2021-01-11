@@ -136,5 +136,75 @@ def quick_start():
         return jsonify(response)
 
 
+"""======================================================================"""
+
+# 接收YEA的请求
+YEA_API = {
+    'sign_up': '/cpds/api/sign_up',
+    'stu_act': '/cpds/api/stu_act',
+    'stu_snp': '/cpds/api/stu_snp',
+    'stu_twqd': '/cpds/api/stu_twqd',
+    'stu_twqd2': '/cpds/api/stu_twqd2'  # 截图上传
+}
+
+
+@app.route(YEA_API['sign_up'], methods=['POST'])
+def yea_sign_up():
+    """
+    调用业务，完成打卡任务，生成截图（基于selenium）
+    :return:
+    """
+    pass
+
+
+@app.route(YEA_API['stu_act'], methods=['POST'])
+def yea_stu_act():
+    """
+    查询用户表,用户是否在库
+    :return:
+    """
+    # response.update({'msg': 'failed', 'info': '账号已登记'})
+    if apis_account_exist(request.form).get('info') == '账号已登记':
+        return jsonify({'msg': 'success', 'info': '验证成功，用户在库'})
+    else:
+        return jsonify({'msg': 'failed', 'info': '验证失败，该用户没有调用权限'})
+
+
+@app.route(YEA_API['stu_snp'], methods=['POST'])
+def yea_stu_snp():
+    """
+    查询任务表，用户是否已签到
+    :return:
+    """
+    if apis_snp_exist(request.form).get('info') == '用户已手动签到':
+        return jsonify({'msg': 'success', 'info': '用户已手动签到'})
+    else:
+        return jsonify({'msg': 'goto', 'info': '任务待执行'})
+
+
+@app.route(YEA_API['stu_twqd'], methods=['POST'])
+def yea_quick_twqd():
+    resp = apis_stu_twqd(request.form)
+    return jsonify(resp)
+
+
+# @app.route(YEA_API['reload_cookie'], methods=['POST'])
+def yea_reload_superuser_cookie():
+    resp = apis_reload_superuser_cookie()
+    return jsonify(resp)
+
+
+@app.route(YEA_API['stu_twqd2'], methods=['POST'])
+def yea_quick_twqd_plus():
+    """
+    当OSS没有截图时使用此接口
+    既已知OSS没有截图，故无论osh-slaver如何执行，都要调用 osh-s上传截图
+    :return:
+    """
+    resp = apis_stu_twqd_plus(request.form)
+    return jsonify(resp)
+
+
+"""======================================================================"""
 if __name__ == '__main__':
     app.run(port=6600, host='0.0.0.0', debug=True)

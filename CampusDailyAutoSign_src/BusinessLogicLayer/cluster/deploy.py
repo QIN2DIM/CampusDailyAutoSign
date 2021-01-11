@@ -1,9 +1,10 @@
 __all__ = ['deploy']
 
 
-def deploy(task_name, tz='cn'):
+def deploy(task_name, tz='cn', superuser_time="12:00"):
     """
         Linux 云端部署
+    :param superuser_time:
     :param task_name: CampusDailySpeedUp(HainanUniversity).run
     :param tz:
     :return:
@@ -15,7 +16,7 @@ def deploy(task_name, tz='cn'):
     from BusinessCentralLayer.sentinel.noticer import send_email
 
     # todo:植入截图合成脚本
-    morn, noon, night = "07:30", "12:00", "21:00"
+    morn, noon, night = "07:30", superuser_time, "21:00"
 
     if tz == 'us':
         # 纽约时区
@@ -23,9 +24,9 @@ def deploy(task_name, tz='cn'):
         noon = (datetime(2020, 11, 6, 12, 0, 0) - timedelta(hours=13)).strftime("%H:%M")
         night = (datetime(2020, 11, 6, 21, 0, 0) - timedelta(hours=13)).strftime("%H:%M")
 
-    schedule.every().day.at(morn).do(task_name)
+    # schedule.every().day.at(morn).do(task_name)
     schedule.every().day.at(noon).do(task_name)
-    schedule.every().day.at(night).do(task_name)
+    # schedule.every().day.at(night).do(task_name)
 
     try:
         while True:

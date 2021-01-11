@@ -11,6 +11,8 @@ from BusinessCentralLayer.middleware.coroutine_engine import CampusDailySpeedUp
 from BusinessLogicLayer.cluster.deploy import deploy
 from BusinessLogicLayer.cluster.slavers.hainanu import HainanUniversity
 from BusinessLogicLayer.cluster.slavers.local_actions import NoCloudAction
+from BusinessLogicLayer.cluster.slavers.Online_Service_Hall_submit import OnlineServiceHallSubmit
+from BusinessLogicLayer.cluster.slavers.osh_slaver import OshSlaver
 from BusinessViewLayer.myapp.forms import app
 from config import *
 
@@ -20,7 +22,9 @@ if 'win' in sys.platform:
 # 解决方案
 __core__ = {
     'hainanu': HainanUniversity(),
-    'local': NoCloudAction()
+    'local': NoCloudAction(),
+    'osh': OnlineServiceHallSubmit(),
+    'osl': OshSlaver()
 }
 
 # 加速策略
@@ -38,7 +42,7 @@ class SystemEngine(object):
         logger.info('<定位配置>:config_path')
 
         # 核心装载，任务识别
-        self.core = __core__['hainanu'] if kwargs.get(
+        self.core = __core__['osl'] if kwargs.get(
             "core") is None else kwargs.get("core")
         logger.info("<驱动核心>:core:{}".format(self.core.__class__.__name__))
 
@@ -127,7 +131,7 @@ class PrepareEnv(object):
             --config_user.csv
         """
         ROOT = [
-            SERVER_PATH_CACHE,
+            SERVER_DIR_CACHE, SERVER_DIR_SCREENSHOT
         ]
 
         if os.path.split(SERVER_PATH_CONFIG_USER)[-1] not in os.listdir(SERVER_DIR_DATABASE):

@@ -12,7 +12,7 @@ env.read_env()
 
 """
 =========================== ʕ•ﻌ•ʔ ===================================
-    (·▽·)欢迎使用V2Ray云彩姬，请跟随提示合理配置项目启动参数
+    (·▽·)欢迎使用CampusDailyAutoSign，请跟随提示合理配置项目启动参数
 =========================== ʕ•ﻌ•ʔ ===================================
 """
 # >>> (√) 强制填写；(*)可选项
@@ -24,6 +24,27 @@ ENABLE_SERVER = env.bool("ENABLE_IO", True)
 ENABLE_DEPLOY = env.bool("ENABLE_DEPLOY", True if 'linux' in sys.platform else False)
 ENABLE_COROUTINE = env.bool("ENABLE_COROUTINE", True if 'linux' in sys.platform else False)
 ENABLE_EMAIL = True
+
+# -----------------------------------------------------------
+# TODO (√)SuperUser -- 网上服务大厅账号
+# 此项用于刷新cookie pool，若不填写程序将无法正常执行
+# -----------------------------------------------------------
+SUPERUSER = {
+    'username': '',
+    'password': ''
+}
+# -----------------------------------------------------------
+# TODO (√)AliyunOss -- 对象存储Oss ACKEY
+# 此项用于存储体温签到截图，为系统核心数据库，必须设置
+# -----------------------------------------------------------
+
+ACKEY = {
+    'id': '',
+    'secret': '',
+    'bucket_name': '',
+    'endpoint': ''
+}
+
 # -----------------------------------------------------------
 # TODO (√)SMTP_ACCOUNT -- 用于发送panic信息警报，默认发送给自己
 # 推荐使用QQ邮箱，开启邮箱SMTP服务教程如下
@@ -58,7 +79,7 @@ API_THREADED: bool = env.bool("API_THREADED", True)
 MYSQL_HOST = env.str("DATABASE_HOST", 'localhost')
 MYSQL_PORT = env.int("MYSQL_PORT", 3306)
 MYSQL_PASSWORD = env.str("MYSQL_PASSWORD", "")
-MYSQL_DB = env.str("MYSQL_DB", "cpdaily_db")
+MYSQL_DB = env.str("MYSQL_DB", "cpds_db")
 
 """
 =========================== ʕ•ﻌ•ʔ ===================================
@@ -89,17 +110,21 @@ QnA = env.dict(
 # ------------------------------
 # 系统文件路径
 # ------------------------------
-
 SERVER_DIR_PROJECT = env.str("SERVER_DIR_PROJECT", dirname(__file__))
 SERVER_DIR_DATABASE = env.str("SERVER_DIR_DATABASE", join(SERVER_DIR_PROJECT, 'Database'))
 SERVER_DIR_FLASK = env.str("SERVER_DIR_FLASK", join(SERVER_DIR_PROJECT, 'BusinessViewLayer'))
 SERVER_PATH_CONFIG_USER = env.str("SERVER_PATH_CONFIG_USER", join(SERVER_DIR_DATABASE, 'config_user.csv'))
-SERVER_PATH_CACHE = env.str("SERVER_PATH_CACHE", join(SERVER_DIR_DATABASE, 'stu_info'))
-
+SERVER_DIR_CACHE = env.str("SERVER_PATH_CACHE", join(SERVER_DIR_DATABASE, 'stu_info'))
+SERVER_DIR_SCREENSHOT = join(SERVER_DIR_DATABASE, 'stu_screenshot')
+SERVER_PATH_COOKIES = join(SERVER_DIR_DATABASE, 'superuser_cookies.txt')
+if "win" in sys.platform:
+    CHROMEDRIVER_PATH = dirname(__file__) + "/BusinessCentralLayer/chromedriver.exe"
+else:
+    CHROMEDRIVER_PATH = dirname(__file__) + "/BusinessCentralLayer/chromedriver"
 # 业务层日志路径
 SERVER_DIR_LOG = env.str("SERVER_DIR_LOG", join(SERVER_DIR_DATABASE, "logs"))
 logger.add(env.str('LOG_RUNTIME_FILE', join(SERVER_DIR_LOG, 'runtime.log')), level='DEBUG', rotation='1 week',
-           retention='20 days',)
+           retention='20 days', )
 logger.add(env.str('LOG_ERROR_FILE', join(SERVER_DIR_LOG, 'error.log')), level='ERROR', rotation='1 week')
 
 # 哨兵脚本
