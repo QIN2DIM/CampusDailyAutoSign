@@ -18,10 +18,8 @@
 
 ## :goat: 项目简介
 
-- **执行概述**
-    
-- [程序流图1](https://www.yuque.com/docs/share/53c62de5-91bf-4f96-9330-fae53c6a4f0d?#) **||**[程序流图2](https://www.yuque.com/docs/share/94dac928-a89c-47d3-9273-8bd049152b6e?#)
-    
+[程序流图1](https://www.yuque.com/docs/share/53c62de5-91bf-4f96-9330-fae53c6a4f0d?#) **||**[程序流图2](https://www.yuque.com/docs/share/94dac928-a89c-47d3-9273-8bd049152b6e?#)
+
 - **框架概述**
     - 本项目前端使用[`Nonebot2 hnu-temp-report-bot`](https://github.com/beiyuouo/hnu-temp-report-bot)交互，支持QQ群内@机器人实现体温签到打卡以及截图发送；	
     - 后端使用微服务框架；截图(base64)上传使用`Selenium + AliyunOSS`，打卡签到使用`Gevent + Requests` ；
