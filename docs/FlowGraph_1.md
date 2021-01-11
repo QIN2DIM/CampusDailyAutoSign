@@ -1,1 +1,0 @@
-![体温签到-流图1](https://i.loli.net/2021/01/11/vAIaROgVf8iQb7Z.png)
