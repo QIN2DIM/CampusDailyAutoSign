@@ -1,10 +1,11 @@
 __all__ = ['osh_status_code', 'OnlineServiceHallSubmit', 'get_snp_and_upload', 'get_admin_cookie', 'AliyunOSS']
 
-import time
-from os.path import join, exists
 import os
+from os.path import join, exists
+import time
 from datetime import datetime
 from typing import Tuple
+import oss2
 
 from selenium.common.exceptions import *
 from selenium.webdriver import Chrome, ChromeOptions, ActionChains
@@ -12,8 +13,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from config import logger, CHROMEDRIVER_PATH, SERVER_DIR_SCREENSHOT, TIME_ZONE_CN, ACKEY, SERVER_PATH_COOKIES
-
-import oss2
+from BusinessLogicLayer.plugins.faker_any import get_useragent
 
 osh_status_code = {
     # 应立即结束任务
@@ -40,7 +40,7 @@ osh_status_code = {
 
     400: '刷新成功。成功获取Superuser Cookie!',
     401: '登录失败。AdminCookie stale! 超级用户COOKIE过时/错误/文件不在目标路径。',
-    402: '登录失败。OSH_IP 可能已被封禁！',
+    402: '登录失败。OSH_IP 可能或被封禁，也可能是该用户不适用本系统（既没有任何在列任务）',
     403: '更新失败。MOD_AMP_AUTH获取异常，可能原因为登陆成功但未获取关键包',
 
     500: '体温截图上传成功。',
@@ -102,7 +102,7 @@ class OnlineServiceHallSubmit(object):
         options.add_experimental_option('excludeSwitches', ['enable-automation'])
 
         # 更换头部
-        # options.add_argument(f'user-agent={get_header()}')
+        options.add_argument(f'user-agent={get_useragent()}')
 
         # 静默启动
         if self.silence is True:
