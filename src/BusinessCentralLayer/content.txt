@@ -1,0 +1,18 @@
+HTTP/1.1 302 Moved Temporarily
+Server: openresty
+Date: Wed, 24 Feb 2021 02:49:19 GMT
+Content-Type: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+Set-Cookie: MOD_AMP_AUTH=; Max-Age=0; path=/; Httponly
+Location: https://ehall.hainanu.edu.cn:443/amp-auth-adapter/login?service=https%3A%2F%2Fehall.hainanu.edu.cn%3A443%2Fqljfwapp%2Fsys%2FlwHainanuStuTempReport%2F*default%2Findex.do
+X-Frame-Options: SAMEORIGIN
+X-Frame-Options: SAMEORIGIN
+
+<html>
+<head><title>302 Found</title></head>
+<body bgcolor="white">
+<center><h1>302 Found</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
