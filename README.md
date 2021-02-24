@@ -9,7 +9,7 @@
 
 ![CPDS NoneBot](https://i.loli.net/2021/02/24/MbkFBGQ3Ohj5X6p.png)
 
-- [**程序流图1**][6] **||**[**程序流图2**][7] ||[**demo演示**][5]
+- [程序流图1][6] **||**[程序流图2][7] ||[demo演示][5]
 
 - 本项目使用[`Nonebot2 hnu-temp-report-bot`](https://github.com/beiyuouo/hnu-temp-report-bot)跳板机实现交互，QQ群内**@机器人**既可完成体温签到打卡；
 
@@ -37,10 +37,10 @@
 
 - [**Email**](mailto:RmAlkaid@outlook.com?subject=CampusDailyAutoSign-ISSUE) **||** [**Home**](https://a-rai.github.io/)**||** [**Studio**](https://jq.qq.com/?_wv=1027&k=a0BxYb35)
 
-[1]: https://github.com/QIN2DIM/CampusDailyAutoSign/blob/master/doc/subdirectory/技术文档(demo).md	"技术文档"
-[2]: https://github.com/QIN2DIM/CampusDailyAutoSign/blob/master/doc/subdirectory/注意事项.md	"注意事项"
-[3]: https://github.com/QIN2DIM/CampusDailyAutoSign/blob/master/doc/subdirectory/更新日志.md	"更新日志"
-[4]: https://github.com/QIN2DIM/CampusDailyAutoSign/blob/master/doc/subdirectory/开源计划.md	"开源计划"
+[1]: https://github.com/QIN2DIM/CampusDailyAutoSign/blob/main/docs/subdirectory/技术文档(demo).md	"技术文档"
+[2]: https://github.com/QIN2DIM/CampusDailyAutoSign/blob/main/docs/subdirectory/注意事项.md	"注意事项"
+[3]: https://github.com/QIN2DIM/CampusDailyAutoSign/blob/main/docs/subdirectory/更新日志.md	"更新日志"
+[4]: https://github.com/QIN2DIM/CampusDailyAutoSign/blob/main/docs/subdirectory/开源计划.md	"开源计划"
 [5]: https://www.yuque.com/docs/share/b0634038-5ee5-4632-80c4-0564e7795489?	"demo演示"
 [6]: https://www.yuque.com/docs/share/53c62de5-91bf-4f96-9330-fae53c6a4f0d?	"程序流图1"
 [7]: https://www.yuque.com/docs/share/94dac928-a89c-47d3-9273-8bd049152b6e?	"程序流图2"
