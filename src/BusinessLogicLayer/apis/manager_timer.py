@@ -6,9 +6,20 @@ from gevent import monkey
 monkey.patch_all()
 from apscheduler.schedulers.blocking import BlockingScheduler
 from src.BusinessCentralLayer.middleware.flow_io import sync_user_data
+from src.BusinessLogicLayer.apis.vulcan_ash import SignInSpeedup, SignInWithScreenshot
 
-from src.BusinessCentralLayer.setting import logger, MANAGER_EMAIL, ENABLE_UPLOAD, TIMER_SETTING
+from src.BusinessCentralLayer.setting import logger, MANAGER_EMAIL, ENABLE_UPLOAD, TIMER_SETTING, config_
 from src.BusinessLogicLayer.plugins.noticer import send_email
+
+
+def _offload_group_users():
+    if not all(config_['group']):
+        return False
+    group_ = set(config_['group'])
+    group_ = [{'username': j} for j in group_]
+
+    # 此处的协程功率不易超过2，教务官网可能使用了并发限制，有IP封禁风险
+    SignInSpeedup(task_docker=group_).interface()
 
 
 def _timed_sign():
@@ -16,18 +27,19 @@ def _timed_sign():
     定时签到-通用模式，
     :return:
     """
-    from src.BusinessLogicLayer.apis.vulcan_ash import SignInSpeedup
 
     logger.info(f"<TimeContainer> Run sign General ")
 
-    # 此处的协程功率不易超过2，教务官网可能使用了并发限制，有IP封禁风险
+    # 拉取临时组用户
+    _offload_group_users()
+
     SignInSpeedup(task_docker=sync_user_data(), power=2).interface()
 
     # 邮件通知
     # TODO 发送报表，
     send_email(
         msg="<TimeContainer> 本机签到任务（General）已完成",
-        to_=MANAGER_EMAIL
+        to_='self'
     )
 
 
@@ -36,15 +48,17 @@ def _timed_sign_and_upload():
     定时签到-截图上传模式，与通用模式无法共存
     :return:
     """
-    from src.BusinessLogicLayer.apis.vulcan_ash import SignInWithScreenshot
 
-    logger.info(f"<TimeContainer> Run _timed_sign_in_with_snp ")
+    logger.info(f"<TimeContainer> Run sign Capture&Sign ")
+
+    # 拉取临时组用户
+    _offload_group_users()
 
     SignInWithScreenshot(task_docker=sync_user_data(), power=2).interface()
 
     send_email(
         msg="<TimeContainer> 用户签到任务（UploadSnp）已完成",
-        to_=MANAGER_EMAIL
+        to_='self'
     )
 
 
@@ -77,5 +91,4 @@ def time_container():
 
 
 if __name__ == '__main__':
-
-    _timed_sign_and_upload()
+    _offload_group_users()
