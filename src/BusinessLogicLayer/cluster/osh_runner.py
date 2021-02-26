@@ -19,7 +19,7 @@ class _OshRunner(object):
         self.cover = cover
         self.debug = debug
         self._state = kwargs.get("_state") if kwargs.get("_state") else 'YES'
-
+        self._date = kwargs.get("_date") if kwargs.get("_date") else 0
         # API 调试接口
         self.API = 'https://ehall.hainanu.edu.cn/qljfwapp/sys/lwHainanuStuTempReport/*default/index.do#/stuTempReport'
 
@@ -51,7 +51,8 @@ class _OshRunner(object):
     # ----------------------------------------------
     # Public API
     # ----------------------------------------------
-    def get_stu_temp_report_data(self, username: str, only_check_status=False, headers_=None) -> dict or int:
+    def get_stu_temp_report_data(self, username: str, headers_=None, only_check_status=False,
+                                 _perm=False, _date: int = 0) -> dict or int:
         import random
         if headers_ is None:
             headers = self.headers_
@@ -85,6 +86,8 @@ class _OshRunner(object):
 
             # 0：获取当日签到任务 1：获取昨日的，2：获取前日的.....
             stu_info: dict = res.json()['datas']['getStuTempReportData']['rows'][0]
+            if only_check_status:
+                stu_info: dict = res.json()['datas']['getStuTempReportData']['rows'][_date]
 
             # 预览请求数据，在debug模式下使用
             if self.debug:
@@ -96,7 +99,10 @@ class _OshRunner(object):
                 task_status = check_task_status()
                 # 如果仅用于查看签到状态，无论状态如何，都结束执行，返回数据
                 if only_check_status:
-                    return task_status
+                    if _perm:
+                        return stu_info
+                    else:
+                        return task_status
                 if task_status != 903:
                     return task_status
 
@@ -135,7 +141,7 @@ class _OshRunner(object):
         except requests.exceptions.TooManyRedirects:
             return 401
         except IndexError as e:
-            logger.exception(e)
+            # logger.exception(e)
             return 402
         except requests.exceptions.RequestException as e:
             logger.exception(e)
