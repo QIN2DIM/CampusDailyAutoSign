@@ -11,7 +11,7 @@
 
 - [程序流图1][6] **||**[程序流图2][7] ||[demo演示][5]
 
-- 本项目使用[`Nonebot2 hnu-temp-report-bot`](https://github.com/beiyuouo/hnu-temp-report-bot)跳板机实现人机交互，QQ群内对**bot(851722457)**使用`关键字指令`+`功能指令`既可完成体温签到打卡；
+- 本项目使用[`Nonebot2 hnu-temp-report-bot`](https://github.com/beiyuouo/hnu-temp-report-bot)跳板机实现人机交互，QQ群内对 **bot(851722457)** 使用`关键字指令`+`功能指令`既可完成体温签到打卡；
 
 ## :kick_scooter: 快速上手
 
