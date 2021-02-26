@@ -11,12 +11,12 @@
 
 - [程序流图1][6] **||**[程序流图2][7] ||[demo演示][5]
 
-- 本项目使用[`Nonebot2 hnu-temp-report-bot`](https://github.com/beiyuouo/hnu-temp-report-bot)跳板机实现交互，QQ群内**@机器人**既可完成体温签到打卡；
+- 本项目使用[`Nonebot2 hnu-temp-report-bot`](https://github.com/beiyuouo/hnu-temp-report-bot)跳板机实现交互，QQ群内对 **bot(851722457)** 使用`关键字指令`+`功能指令`既可完成体温签到打卡；
 
 ## :kick_scooter: 快速上手
 
 - **【方案一】用户**
-  - 添加QQ机器人 **bot(851722457)**
+  - 在群内拉入QQ机器人 **bot(851722457)**
   - 根据[技术文档][1]中的引导完成定时任务的增删改查或立即执行签到操作。
 - **【方案二】开发者**
   - Clone项目:champagne:
