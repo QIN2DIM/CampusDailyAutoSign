@@ -30,6 +30,8 @@ SERVER_DIR_DATABASE = os.path.join(SERVER_DIR_PROJECT, 'Database')
 SERVER_DIR_CACHE = os.path.join(SERVER_DIR_DATABASE, 'stu_info')
 # src/database/stu_screenshot
 SERVER_DIR_SCREENSHOT = os.path.join(SERVER_DIR_DATABASE, 'stu_screenshot')
+# src/database/cache
+SERVER_DIR_CACHE_FOR_TIMER = os.path.join(SERVER_DIR_DATABASE, 'cache')
 # src/database/superuser_cookies.txt
 SERVER_PATH_COOKIES = os.path.join(SERVER_DIR_DATABASE, 'superuser_cookies.txt')
 #
@@ -87,29 +89,30 @@ OSH_STATUS_CODE = {
     901: '任务待提交。今日签到任务已出现，但未抵达签到开始时间。',
 
     # 应直接在当前列表调用截图上传模块
-    902: '任务已提交。任务状态显示用户已签到。',
+    902: 'The task has been submitted. The task status shows that the user has checked in.',
 
     # 调用主程序完成签到任务
     903: '任务待提交。任务出现并抵达开始签到时间。',
     904: '',
 
     # 任务句柄
-    300: '任务提交成功。通过OshRunner签到成功。',
-    301: '任务提交失败。出现未知错误。',
+    300: 'The task was submitted successfully. Sign in successfully through RUshRunner.',
+    301: 'The task submission failed. An unknown error occurred.',
     302: '任务提交失败。重试次数超过阈值',
     303: '任务提交失败。Selenium操作超时',
-    304: '任务提交失败。该用户不使用网服大厅进行签到。具体表现为日期范围内的打卡任务全为空。',
+    304: 'The task submission failed. The user does not use the network service lobby to sign in.'
+         ' The specific performance is that all check-in tasks within the date range are empty.',
     305: '任务提交失败。T_STU_TEMP_REPORT_MODIFY 返回值为0。',
 
     306: '任务解析异常。Response解析json时抛出的JSONDecodeError错误，根本原因为返回的datas为空。可能原因为：接口变动，网络超时，接口参数变动等。',
     310: '任务重置成功。使用OshRunner越权操作，重置当前签到状态。',
 
-    400: '刷新成功。成功获取Superuser Cookie!',
-    401: '登录失败。AdminCookie stale! 超级用户COOKIE过时/错误/文件不在目标路径。',
+    400: "The superuser's cookie is refreshed successfully.",
+    401: 'Login failed. Admin Cookie stale! Super User Cookie expired/error/file not in the target path.',
     402: '登录失败。OSH_IP 可能或被封禁，也可能是该用户不适用本系统（既没有任何在列任务）',
     403: '更新失败。MOD_AMP_AUTH获取异常，可能原因为登陆成功但未获取关键包',
 
-    500: '体温截图上传成功。',
+    500: 'The screenshot was uploaded successfully.',
     501: '体温截图获取失败。可能原因为上传环节异常或登录超时（账号有误，操作超时）'
 }
 

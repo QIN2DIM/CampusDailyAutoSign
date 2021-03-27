@@ -20,6 +20,7 @@ _command_set = {
     "ping": "测试接口可用性",
     "sign [StuNumbers]": "为某个/一系列账号签到（立即执行）",
     "group": "为config.yaml group中的账号越权签到(General)",
+    "refresh_cookie": "检测并刷新越权cookie",
     # ---------------------------------------------
     # 调用示例
     # ---------------------------------------------
@@ -31,7 +32,7 @@ class _ConfigQuarantine(object):
     def __init__(self):
 
         self.root = [
-            SERVER_DIR_DATABASE, SERVER_DIR_SCREENSHOT, SERVER_DIR_CACHE
+            SERVER_DIR_DATABASE, SERVER_DIR_SCREENSHOT, SERVER_DIR_CACHE, SERVER_DIR_CACHE_FOR_TIMER
         ]
         self.flag = False
 
@@ -191,7 +192,7 @@ class _ScaffoldGuider(object):
     @staticmethod
     def _scaffold_ping():
         """
-        测试校园网API是否正常
+        Test whether the campus network API is normal
         :return:
         """
 
@@ -225,6 +226,16 @@ class _ScaffoldGuider(object):
             print("传输开始时间：{} ms".format(round(c.getinfo(c.STARTTRANSFER_TIME) * 1000), 2))
             print("传输结束总时间：{} ms".format(round(c.getinfo(c.TOTAL_TIME) * 1000), 2))
             c.close()
+
+    @staticmethod
+    def _scaffold_refresh_cookie():
+        """
+        Check the timeliness of the cookie, and automatically pull the cookie if the cookie fails
+
+        :return:
+        """
+        from src.BusinessLogicLayer.apis.manager_cookie import check_admin_cookie
+        check_admin_cookie()
 
 
 scaffold = _ScaffoldGuider()

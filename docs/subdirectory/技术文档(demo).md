@@ -1,0 +1,1 @@
+# :gear:CampusDailyAutoSign 技术文档

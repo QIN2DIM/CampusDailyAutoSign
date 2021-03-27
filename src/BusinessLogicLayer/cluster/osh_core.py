@@ -35,7 +35,7 @@ class _OnlineServiceHallSubmit(object):
     # ----------------------------------
     # Public API
     # ----------------------------------
-    def rush_cookie_pool(self, user, mod='upload') -> Tuple[int, str]:
+    def rush_cookie_pool(self, user, kernel: str = 'admin') -> Tuple[int, str]:
         api_: Chrome = self._set_startup_option()
 
         try:
@@ -44,20 +44,22 @@ class _OnlineServiceHallSubmit(object):
             if login_status == 302:
                 logger.warning(f'FAILED -- {user["username"]}-- {OSH_STATUS_CODE[login_status]} -- 网络状况较差或OSH接口繁忙')
                 return 302, user['username']
-
             # 获取SUPER_USER_COOKIE
             time.sleep(1)
             WebDriverWait(api_, 10).until(EC.element_located_to_be_selected)
-
             cookie: dict or None = api_.get_cookie('MOD_AMP_AUTH')
+            # 若cookie有效则进行cookie缓存操作
             if cookie and isinstance(cookie, dict):
                 user_cookie: str = f'{cookie.get("name")}={cookie.get("value")};'
                 logger.info(f'Get Superuser Cookie -- {user_cookie}')
-                if mod == 'upload':
-                    from src.BusinessCentralLayer.middleware.flow_io import df
-                    df.update_user(user['username'], {'cookie': user_cookie})
-                with open(SERVER_PATH_COOKIES, 'w', encoding='utf-8') as f:
-                    f.write(user_cookie)
+                # 根据不同的接入模式，使用不同的解决方案存储cookie
+                if kernel == 'admin':
+                    with open(SERVER_PATH_COOKIES, 'w', encoding='utf-8') as f:
+                        f.write(user_cookie)
+                elif kernel == 'general':
+                    cache_path = os.path.join(SERVER_DIR_CACHE_FOR_TIMER, f'{user["username"]}.txt')
+                    with open(cache_path, 'w', encoding='utf-8') as f:
+                        f.write(user_cookie)
                 return 400, user_cookie
             else:
                 return 403, user['username']

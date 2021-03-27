@@ -70,7 +70,6 @@ def check_display_state(user: dict, debug=False, _date=0) -> dict:
     )
     if isinstance(params, int):
         response = {'code': params, 'info': OSH_STATUS_CODE[params]}
-        # logger.info(f'{user["username"]} -- {response["info"]}')
         return response
 
 
@@ -83,5 +82,5 @@ def stu_twqd(user: dict, cover=False):
     """
     params = runner(cover=cover, debug=False).run(user)
     response = {'code': params[0], 'info': f"{user['username']} -- {OSH_STATUS_CODE[params[0]]}"}
-    # logger.info(response['info'])
     return response
+

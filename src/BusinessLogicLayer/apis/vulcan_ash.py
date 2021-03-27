@@ -2,9 +2,10 @@ __all__ = ['SignInWithScreenshot', 'SignInSpeedup']
 
 from typing import List
 
+from requests.exceptions import *
+
 from src.BusinessCentralLayer.coroutine_engine import lsu_
 from src.BusinessCentralLayer.setting import logger
-from requests.exceptions import *
 
 
 class SignInSpeedup(lsu_):

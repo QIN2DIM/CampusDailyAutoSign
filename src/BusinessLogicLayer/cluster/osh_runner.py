@@ -6,7 +6,7 @@ from typing import Tuple
 import requests
 
 from src.BusinessCentralLayer.setting import TIME_ZONE_CN, logger, SERVER_PATH_COOKIES, OSH_STATUS_CODE
-from src.BusinessLogicLayer.apis.manager_cookie import get_admin_cookie
+from src.BusinessLogicLayer.apis.manager_cookie import reload_admin_cookie
 
 
 class _OshRunner(object):
@@ -220,6 +220,20 @@ class _OshRunner(object):
             f.write(superuser_cookie)
         return superuser_cookie
 
+    @staticmethod
+    def check_cookie(mod_amp_auth: str) -> bool:
+        """
+        检测superuser-cookie 是否过期
+        :param mod_amp_auth:
+        :return:
+        """
+        api_ = 'https://ehall.hainanu.edu.cn/jsonp/ywtb/searchServiceItem?flag=0'
+        res = requests.get(api_, headers={'Cookie': mod_amp_auth})
+        if res.json()['result'] == 'success':
+            return True
+        else:
+            return False
+
     def run(self, user: dict = None) -> Tuple[int, dict]:
         """
         :param user: 传入学号键值对{'username':'学号’}
@@ -227,26 +241,32 @@ class _OshRunner(object):
                 dict为用户信息表，若执行成功则返回丰富数据。若程序中断，则返回传入的 param user
         """
 
-        # 以是否传入密码区分不同的行为模式
+        # ----------------------------------------------
+        # Overload Headers
+        # ----------------------------------------------
         headers_ = self.headers_
-        # 若是在库用户，则使用用户的cookie访问系统
-        # 若未在库，则使用越权签到方案（为外部接口提供服务）
+
+        # > Distinguish different behavior modes based on whether to pass in a password.
+        # If you are a library user, use the user's cookie to access the system.
+        # If not in the library, use the ultra vires check-in scheme (provide services for external interfaces).
         if user.get("password") and user.get("username"):
-            # 以下是两种检测、更新、重载cookie的解决方案，择一使用
-            # get_admin_cookie 为Selenium启动方案（更加成熟，无需频繁维护）
-            # quick_refresh_cookie 为port接口更新方案（更加迅速，面向过程，需要维护接口）
-
-            # headers_['Cookie'] = get_admin_cookie(user)[-1]
-            headers_['Cookie'] = self.quick_refresh_cookie(user)
-
-        # 查询任务
+            # > The following are two solutions for detecting, updating, and reloading cookies, choose one to use
+            # reload_admin_cookie  :Use Selenium (more mature, without frequent maintenance)
+            # quick_refresh_cookie :Use the post method (faster but need to maintain the interface)
+            from src.BusinessLogicLayer.apis.manager_cookie import reload_admin_cookie
+            headers_['Cookie'] = reload_admin_cookie(user)[-1]
+            # headers_['Cookie'] = self.quick_refresh_cookie(user)
+        # ----------------------------------------------
+        # Overload tasks
+        # ----------------------------------------------
         params = self.get_stu_temp_report_data(user["username"], headers_=headers_)
-        # print(headers_['Cookie'])
         if isinstance(params, int):
-            logger.warning(f'<OshRunner> {user["username"]} || {OSH_STATUS_CODE[params]}')
+            if self.debug:
+                logger.warning(f'<OshRunner> {user["username"]} || {OSH_STATUS_CODE[params]}')
             return params, user
-
-        # 提交任务
+        # ----------------------------------------------
+        # Submit task
+        # ----------------------------------------------
         result = self._submit_task(user_form=params, headers_=headers_)
         if self.debug:
             if result == 300:
@@ -271,21 +291,21 @@ class _OshRunner(object):
                 mod_amp_auth = f.read()
         # 文件缺失
         except FileNotFoundError:
-            return get_admin_cookie()[-1]
+            return reload_admin_cookie()[-1]
 
         try:
             # 检测cookie是否可用
             # logger.debug(f"<OshRunner> Test the timeliness of the superuser's cookie -- {mod_amp_auth}")
             if mod_amp_auth:
-                res = requests.get(self.api_checkCookie, headers={'Cookie': mod_amp_auth})
-                # cookie可用，
-                if res.json()['result'] == 'success':
-                    # logger.success(f"<OshRunner> load the superuser's cookie -- {mod_amp_auth}")
+                # cookie可用
+                if self.check_cookie(mod_amp_auth):
                     return mod_amp_auth
                 # cookie过期 启动子程序刷新cookie
                 else:
                     logger.warning(f"<OshRunner> Superuser's cookie already expired！")
+                    # 解决方案1：模拟登陆
                     # get_admin_cookie()
+                    # 解决方案2：requests
                     self.quick_refresh_cookie()
                     return self._load_super_user_cookie(fp)
             # 文件中的cookie为空，需要重新写入
