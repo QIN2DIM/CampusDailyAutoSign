@@ -1,3 +1,5 @@
+> 📌 本项目服务主体暂无线上风控需要。本项目仓库归档存储。
+
 # CampusDailyAutoSign
 
 今日校园 体温检测 自动签到（For:HainanUniversity） 
@@ -35,7 +37,7 @@
 
 > 本项目由海南大学机器人与人工智能协会数据挖掘小组 **(A-RAI.DM)** 提供维护
 
-- [**Email**](mailto:RmAlkaid@outlook.com?subject=CampusDailyAutoSign-ISSUE) **||** [**Home**](https://a-rai.github.io/)**||** [**Studio**](https://jq.qq.com/?_wv=1027&k=a0BxYb35)
+- [**Email**](mailto:HainanU_arai@163.com?subject=CampusDailyAutoSign-ISSUE) **||** [**Home**](https://a-rai.github.io/)**||** [**Studio**](https://jq.qq.com/?_wv=1027&k=a0BxYb35)
 
 [1]: https://github.com/QIN2DIM/CampusDailyAutoSign/blob/main/docs/subdirectory/技术文档(demo).md	"技术文档"
 [2]: https://github.com/QIN2DIM/CampusDailyAutoSign/blob/main/docs/subdirectory/注意事项.md	"注意事项"
